@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<HTML>
+<body>
+	<video id="marble" src="marble.mp4" controls="false"></video>
+	<canvas id="canvas"></canvas>
+	<script>
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		var video = document.getElementById('marble');
+
+		//set canvas size = video size
+		video.addEventListener('loadedmetadata', function() {
+			canvas.width = marble.videoWidth;
+			canvas.height = marble.videoHeight;
+		});
+
+		video.addEventListener('play', function() {
+			var $this = this;
+			(function loop() {
+				if (!$this.paused && !$this.ended) {
+					context.drawImage($this, 0, 0);
+					//gaussianBlur();
+					setTimeout(loop, 1000/30); //drawing at 30fps
+				}
+			})();
+		}, 0);
+
+		function gaussianBlur() {
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+
+			context.drawImage(canvas, 0, 0);
+
+			var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			var px = imageData.data;
+			for (var i = 0, len= px.length; i < len; i++) {
+                if (i % 4 === 3) {continue;}
+
+                px[i] = ( tmpPx[i] 
+                    + (tmpPx[i - 4] || tmpPx[i])
+                    + (tmpPx[i + 4] || tmpPx[i]) 
+                    + (tmpPx[i - 4 * data.width] || tmpPx[i])
+                    + (tmpPx[i + 4 * data.width] || tmpPx[i]) 
+                    + (tmpPx[i - 4 * data.width - 4] || tmpPx[i])
+                    + (tmpPx[i + 4 * data.width + 4] || tmpPx[i])
+                    + (tmpPx[i + 4 * data.width - 4] || tmpPx[i])
+                    + (tmpPx[i - 4 * data.width + 4] || tmpPx[i])
+                    )/9;
+            };
+			context.putImageData(imageData, 0, 0);
+			delete tmpPx;
+		}
+		</script>
+</body>
+</HTML>
